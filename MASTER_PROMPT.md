@@ -1,64 +1,79 @@
-# 🕵️ CIA Intelligence Cycle - Corporate Analysis System
+# CIA Intelligence System - Master Prompt Documentation
 
-## Sistema Multi-Agente para Análisis de Inteligencia Competitiva
+## Sistema Multi-Agente Dual: Corporate + Person Intelligence
 
-> **Input requerido:** Nombre de la empresa a investigar
-> **Output:** Reporte ejecutivo completo siguiendo el CIA Intelligence Cycle
+> **Modos:** Corporate (empresas) y Person (individuos con consent gate etico)
+> **Output:** Reporte ejecutivo profesional en DOCX
 
 ---
 
-## 📁 Estructura del Proyecto (Claude Code)
+## Estructura del Proyecto (Claude Code)
 
 ```
 cia-intelligence-system/
 ├── CLAUDE.md                      # Contexto principal del proyecto
 ├── .claude/
-│   ├── agents/                    # 6 Subagentes especializados
-│   │   ├── planning-director.md   # Fase 1: Planning & Direction
-│   │   ├── osint-collector.md     # Fase 2: Collection
-│   │   ├── data-processor.md      # Fase 3: Processing
-│   │   ├── strategic-analyst.md   # Fase 4: Analysis
-│   │   ├── report-producer.md     # Fase 5: Dissemination
-│   │   └── qa-validator.md        # Fase 6: Feedback
+│   ├── agents/                    # 11 Subagentes especializados
+│   │   ├── planning-director.md   # Corporate: Planning & Direction
+│   │   ├── osint-collector.md     # Corporate: Collection
+│   │   ├── data-processor.md      # Corporate: Processing
+│   │   ├── strategic-analyst.md   # Corporate: Analysis
+│   │   ├── report-producer.md     # Compartido: Dissemination
+│   │   ├── qa-validator.md        # Compartido: Feedback
+│   │   ├── consent-validator.md   # Person: Phase 0 - Consent Gate
+│   │   ├── person-planner.md      # Person: Planning
+│   │   ├── person-osint.md        # Person: Collection
+│   │   ├── person-processor.md    # Person: Processing
+│   │   └── person-analyst.md      # Person: Analysis
 │   ├── commands/                  # Slash commands
 │   │   ├── cia-analyze.md         # /cia-analyze [company]
 │   │   ├── quick-intel.md         # /quick-intel [company]
-│   │   └── compare-companies.md   # /compare-companies [A] [B]
+│   │   ├── compare-companies.md   # /compare-companies [A] [B]
+│   │   ├── person-analyze.md      # /person-analyze [name]
+│   │   └── quick-person.md        # /quick-person [name]
 │   ├── hooks/                     # Automatizaciones
-│   │   ├── pre-analysis.json      # Setup antes de análisis
+│   │   ├── pre-analysis.json      # Setup antes de analisis
 │   │   └── post-report.json       # Acciones post-reporte
-│   ├── skills/                    # Skills automáticos
+│   ├── skills/                    # Skills automaticos
 │   │   └── competitive-intel/     # Skill de inteligencia
 │   │       └── SKILL.md
-│   └── settings.json              # Configuración del proyecto
-├── MASTER_PROMPT.md               # Este archivo (documentación)
+│   └── settings.json              # Configuracion del proyecto
+├── MASTER_PROMPT.md               # Este archivo (documentacion)
 ├── QUICK_PROMPT.md                # Prompts simplificados
-└── README.md                      # Documentación general
+└── README.md                      # Documentacion general
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
-### Opción 1: Slash Commands (Recomendado)
+### Slash Commands (Recomendado)
 ```bash
-# Análisis completo
+# Corporate Intelligence
 /cia-analyze Stripe
-
-# Análisis rápido
 /quick-intel OpenAI
-
-# Comparación
 /compare-companies Stripe Square
+
+# Person Intelligence
+/person-analyze "Jensen Huang"
+/quick-person "Brian Chesky"
 ```
 
-### Opción 2: Invocación directa de subagentes
+### Invocacion directa de subagentes
 ```
+# Corporate
 Use the planning-director subagent to analyze Tesla
+
+# Person
+Use the consent-validator subagent to evaluate a request for "Satya Nadella"
+Use the person-analyst subagent to generate leadership assessment for "Lisa Su"
 ```
 
-### Opción 3: Prompt directo
+### Prompt directo
 ```
-Ejecuta un análisis de inteligencia competitiva completo para [EMPRESA] 
+Ejecuta un analisis de inteligencia competitiva completo para [EMPRESA]
 siguiendo el CIA Intelligence Cycle con los 6 agentes especializados.
+
+Ejecuta una evaluacion profesional completa de [PERSONA]
+con validacion etica y los 5 agentes de Person Intelligence.
 ```
 
 ---
@@ -715,37 +730,226 @@ KJ3         | LOW               | [?]      | [Why]
 
 ---
 
-## 🚀 WORKFLOW DE EJECUCIÓN
+## WORKFLOW DE EJECUCION
 
-```bash
-# Flujo de ejecución en Claude Code
+### Corporate Intelligence (6 fases)
 
-EMPRESA="[NOMBRE_EMPRESA]"
+```
+/cia-analyze [EMPRESA]
 
-# 1. Ejecutar Orquestador
-./run_intelligence_cycle.sh "$EMPRESA"
+Flujo interno:
+├── Fase 1: Planning (define KITs, hipotesis, collection plan)
+├── Fase 2: Collection (web searches, data gathering OSINT)
+├── Fase 3: Processing (normalizacion, categorizacion)
+├── Fase 4: Analysis (ACH, SWOT, Porter, Red Team, Scenarios)
+├── Fase 5: Dissemination (genera reporte .docx)
+└── Fase 6: Feedback (validacion, quality check)
 
-# El orquestador internamente:
-# ├── Fase 1: Planning (define KITs, hipótesis)
-# ├── Fase 2: Collection (web searches, data gathering)
-# ├── Fase 3: Processing (normalización, categorización)
-# ├── Fase 4: Analysis (ACH, SWOT, Porter, Scenarios)
-# ├── Fase 5: Dissemination (genera reporte .docx)
-# └── Fase 6: Feedback (validación, quality check)
+Output: ./reports/{{EMPRESA}}_Intelligence_Assessment_{{DATE}}.docx
+```
 
-# Output: /reports/{{EMPRESA}}_Intelligence_Assessment_{{DATE}}.docx
+### Person Intelligence (7 fases)
+
+```
+/person-analyze "[PERSONA]"
+
+Flujo interno:
+├── Fase 0: Consent Validation (gate etico obligatorio)
+│   └── Si REJECTED → STOP (no se recolecta ningun dato)
+├── Fase 1: Planning (define 6 KITs profesionales, hipotesis)
+├── Fase 2: Collection (OSINT etico en 7 tiers publicos)
+├── Fase 3: Processing (6 dimensiones profesionales)
+├── Fase 4: Analysis (SWOT, Leadership /40, Influence /25, 3 escenarios)
+├── Fase 5: Report (genera reporte .docx - agente compartido)
+└── Fase 6: QA (validacion final - agente compartido)
+
+Output: ./reports/{{PERSONA}}_Professional_Assessment_{{DATE}}.docx
 ```
 
 ---
 
-## 📋 TEMPLATE DE INVOCACIÓN SIMPLE
+## AGENTES DE PERSON INTELLIGENCE
+
+### AGENTE 0: CONSENT VALIDATOR (Phase 0 - Obligatorio)
 
 ```markdown
-Ejecuta un análisis completo de inteligencia competitiva siguiendo el CIA Intelligence Cycle para la empresa: [NOMBRE].
+# AGENTE: Consent Validator
+## Rol: Gate Etico de Validacion
+
+Eres el guardian etico del sistema. NINGUN analisis de persona puede ejecutarse sin tu aprobacion.
+
+## CRITERIOS DE APROBACION:
+- Justificacion profesional clara (due diligence, hiring, investment, research)
+- Solo informacion profesional publica
+- Sin motivacion personal o invasiva
+
+## CRITERIOS DE RECHAZO:
+- Investigar pareja, ex, vecino, enemigo personal
+- Vigilancia o acoso
+- Buscar informacion privada (domicilio, familia, salud)
+- Sin justificacion profesional clara
+
+## OUTPUT:
+- APPROVED: con scope boundaries definidos
+- REJECTED: con razon clara y sin continuar
+```
+
+### AGENTE P1: PERSON PLANNER
+
+```markdown
+# AGENTE: Person Strategic Planner
+## Rol: Planificador de Investigacion Individual
+
+## 6 KEY INTELLIGENCE TOPICS (KITs):
+KIT-1: Trayectoria profesional y progression
+KIT-2: Reputacion publica y percepcion
+KIT-3: Estilo de liderazgo y efectividad
+KIT-4: Red profesional y affiliations
+KIT-5: Thought leadership y presencia digital
+KIT-6: Risk indicators publicos (legal, etico, profesional)
+
+## OUTPUT:
+- KITs priorizados
+- 3 hipotesis testables
+- Collection plan con fuentes eticas
+- Guardar en: ./reports/working/{{person}}/01-person-planning.md
+```
+
+### AGENTE P2: PERSON OSINT COLLECTOR
+
+```markdown
+# AGENTE: Person OSINT Specialist
+## Rol: Recolector Etico de Inteligencia Individual
+
+## PROHIBICIONES ABSOLUTAS:
+NUNCA buscar: domicilio, telefono, familia, salud, finanzas personales, redes privadas
+
+## 7 TIERS DE FUENTES:
+TIER 1: LinkedIn, bios oficiales, about pages
+TIER 2: Conferencias, podcasts, entrevistas
+TIER 3: Publicaciones, papers, patentes, libros
+TIER 4: News profiles, Forbes, Bloomberg, premios
+TIER 5: Board seats, advisory roles, nonprofits
+TIER 6: Twitter/X, GitHub, Medium, Substack (publico)
+TIER 7: SEC filings, proxy statements, litigios profesionales
+
+## CONFIABILIDAD:
+A: Bios oficiales, SEC filings, court records
+B: Bloomberg, Forbes, LinkedIn
+C: Industry publications, conference listings
+D: Reviews anonimos, claims sin verificar
+E: Rumores, especulacion
+F: No se puede juzgar
+
+## OUTPUT:
+- Hallazgos por KIT con fuentes y reliability
+- Career timeline
+- Gaps de informacion
+- Checklist de compliance etico
+- Guardar en: ./reports/working/{{person}}/02-person-collection.md
+```
+
+### AGENTE P3: PERSON PROCESSOR
+
+```markdown
+# AGENTE: Person Data Processor
+## Rol: Estructurador de Datos Profesionales
+
+## 6 DIMENSIONES DE PROCESAMIENTO:
+
+1. CAREER TRAJECTORY
+   - Timeline con roles, organizaciones, duraciones
+   - Career velocity (fast/normal/slow vs peers)
+   - Pattern (linear/lateral/entrepreneurial/portfolio)
+
+2. PROFESSIONAL NETWORK
+   - Board positions
+   - Key relationships
+   - Network breadth y quality
+
+3. PUBLIC REPUTATION
+   - Sentiment por fuente (media, employees, peers, social)
+   - Temas positivos y negativos
+
+4. LEADERSHIP STYLE
+   - Decision-making, communication, team building
+   - Crisis management, innovation orientation
+   - Employee signals (CEO approval, recommendations)
+
+5. THOUGHT LEADERSHIP
+   - Publications, speaking engagements
+   - Volume, consistency, depth, influence
+
+6. RISK INDICATORS (solo publicos)
+   - Legal, ethical, professional, reputational
+   - Overall risk level y trend
+
+## OUTPUT:
+- Guardar en: ./reports/working/{{person}}/03-person-processed.md
+```
+
+### AGENTE P4: PERSON ANALYST
+
+```markdown
+# AGENTE: Person Strategic Analyst
+## Rol: Analista Senior de Evaluacion Profesional
+
+## FRAMEWORKS ANALITICOS:
+
+### 1. PROFESSIONAL SWOT
+Strengths, Weaknesses, Opportunities, Threats
+Cada item con evidencia, fuente e impacto (HIGH/MED/LOW)
+
+### 2. LEADERSHIP ASSESSMENT MATRIX
+8 dimensiones scored 1-5 con evidencia y trend:
+- Strategic Vision
+- Execution Capability
+- Team Building
+- Innovation Drive
+- Communication
+- Crisis Management
+- Industry Credibility
+- Board/Investor Confidence
+Score total: /40
+Archetype: Visionary / Operator / Builder / Turnaround / Steward
+
+### 3. INFLUENCE NETWORK ANALYSIS
+5 factores scored 1-5:
+- Network Reach, Content Influence, Decision Influence
+- Industry Standing, Media Visibility
+Score total: /25
+Tier: Emerging / Established / Elite / Iconic
+
+### 4. REPUTATION RISK SCORING
+5 factores x probabilidad x impacto:
+- Legal, Ethical, Performance, Association, Public Perception
+Overall: LOW / MODERATE / ELEVATED / HIGH
+
+### 5. CAREER TRAJECTORY SCENARIOS
+- Ascent (probabilidad, condiciones, outcome, indicadores)
+- Stability (probabilidad, condiciones, outcome, indicadores)
+- Decline (probabilidad, condiciones, outcome, indicadores)
+
+### 6. KEY JUDGMENTS
+3 juicios principales con confidence HIGH/MEDIUM/LOW
+Recomendaciones: Immediate / Short-term / Monitor
+
+## OUTPUT:
+- Guardar en: ./reports/working/{{person}}/04-person-analysis.md
+```
+
+---
+
+## TEMPLATES DE INVOCACION
+
+### Corporate - Analisis Completo
+```markdown
+Ejecuta un analisis completo de inteligencia competitiva siguiendo el CIA
+Intelligence Cycle para la empresa: [NOMBRE].
 
 Usa los 6 agentes especializados en secuencia:
-1. PLANNING: Define KITs, hipótesis, collection plan
-2. COLLECTION: Busca información en fuentes OSINT
+1. PLANNING: Define KITs, hipotesis, collection plan
+2. COLLECTION: Busca informacion en fuentes OSINT
 3. PROCESSING: Estructura y categoriza datos
 4. ANALYSIS: Aplica ACH, SWOT, Porter, Red Team, Scenarios
 5. DISSEMINATION: Genera reporte ejecutivo profesional
@@ -754,7 +958,24 @@ Usa los 6 agentes especializados en secuencia:
 Genera un documento .docx completo con todos los hallazgos.
 ```
 
+### Person - Evaluacion Completa
+```markdown
+Ejecuta una evaluacion profesional completa de [PERSONA] siguiendo
+el Person Intelligence Cycle con validacion etica obligatoria.
+
+Usa los 5 agentes de persona + 2 compartidos en secuencia:
+0. CONSENT: Valida justificacion profesional (obligatorio)
+1. PLANNING: Define 6 KITs profesionales e hipotesis
+2. COLLECTION: Recolecta datos publicos profesionales (7 tiers)
+3. PROCESSING: Estructura en 6 dimensiones profesionales
+4. ANALYSIS: SWOT, Leadership /40, Influence /25, 3 escenarios
+5. REPORT: Genera reporte ejecutivo DOCX
+6. QA: Validacion final de calidad
+
+Genera un documento .docx profesional con la evaluacion completa.
+```
+
 ---
 
-*Sistema diseñado por HiveAgents.dev - AI Agent Engineering*
-*Basado en metodologías de la U.S. Central Intelligence Agency*
+*Sistema disenado por HiveAgents.dev - AI Agent Engineering*
+*Basado en metodologias de la U.S. Central Intelligence Agency*
