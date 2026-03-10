@@ -2,7 +2,26 @@
 
 Sistema multi-agente dual para ejecutar analisis de inteligencia competitiva (empresas) y evaluacion profesional (personas), siguiendo la metodologia del CIA Intelligence Cycle, construido como una configuracion nativa de **Claude Code** usando subagents, hooks, skills y slash commands.
 
-> Este proyecto demuestra como usar Claude Code mas alla del desarrollo de software: como plataforma de agentes de proposito general para inteligencia competitiva y evaluacion profesional.
+> **Zero code.** Este proyecto no tiene codigo ejecutable ni dependencias. Son archivos de configuracion (markdown + JSON) que transforman Claude Code en un sistema de inteligencia con 11 agentes especializados. Clonas, abris Claude Code, y funciona.
+
+---
+
+## Por que importa esto?
+
+La mayoria de la gente usa Claude Code para escribir software. Pero Claude Code es mucho mas que eso: es una **plataforma de agentes de proposito general**.
+
+Este proyecto demuestra como usarlo para **inteligencia competitiva y evaluacion profesional** sin escribir una sola linea de codigo — solo configurando agentes, comandos, hooks y skills en archivos `.claude/`.
+
+**Lo que podes hacer:**
+- Analizar una empresa como lo haria un analista de inteligencia (SWOT, Porter, ACH, escenarios)
+- Evaluar profesionalmente a un individuo con gate etico obligatorio
+- Comparar dos empresas head-to-head en 7 dimensiones
+- Obtener un reporte ejecutivo en formato DOCX listo para compartir
+
+**Lo que NO necesitas:**
+- No necesitas saber programar
+- No necesitas instalar dependencias ni correr scripts
+- No necesitas configurar APIs ni bases de datos
 
 ---
 
@@ -10,10 +29,10 @@ Sistema multi-agente dual para ejecutar analisis de inteligencia competitiva (em
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/cia-intelligence-system.git
+git clone https://github.com/hiveagents-dev/agentic-cia-intelligence-system.git
 
 # 2. Abrir Claude Code en el directorio
-cd cia-intelligence-system
+cd agentic-cia-intelligence-system
 claude
 
 # 3. Ejecutar un analisis
@@ -21,6 +40,10 @@ claude
 ```
 
 Eso es todo. Claude Code detecta automaticamente la configuracion en `.claude/` y habilita los 11 agentes, comandos y hooks.
+
+### Que es Claude Code?
+
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) es la CLI oficial de Anthropic. Funciona en tu terminal y puede leer archivos, ejecutar comandos, buscar en la web, y coordinar multiples agentes. Cuando abris Claude Code en un directorio con `.claude/`, automaticamente carga la configuracion y habilita las capacidades definidas.
 
 ### Comandos disponibles
 
@@ -148,6 +171,19 @@ Claude Code lee automaticamente:
 
 No hay codigo ejecutable ni dependencias. Todo es configuracion declarativa que Claude Code interpreta.
 
+### Mapeo de features de Claude Code
+
+| Feature de Claude Code | Como se usa en este proyecto | Archivo |
+|------------------------|------------------------------|---------|
+| **Subagents** | 11 agentes especializados con roles, herramientas y modelos distintos | `.claude/agents/*.md` |
+| **Slash Commands** | 5 comandos que orquestan flujos multi-agente completos | `.claude/commands/*.md` |
+| **Hooks** | Automatizaciones pre/post (crear directorios, notificaciones) | `.claude/hooks/*.json` |
+| **Skills** | Activacion automatica cuando detecta patrones de inteligencia | `.claude/skills/competitive-intel/` |
+| **Settings** | Permisos, modelo por defecto, configuracion de hooks | `.claude/settings.json` |
+| **CLAUDE.md** | Reglas de comportamiento y contexto del proyecto | `CLAUDE.md` |
+
+Cada agente es un archivo markdown con YAML frontmatter que define su nombre, descripcion, herramientas permitidas y modelo. Claude Code los carga automaticamente y los usa como subprocesos especializados.
+
 ---
 
 ## Tecnicas analiticas incluidas
@@ -164,9 +200,18 @@ No hay codigo ejecutable ni dependencias. Todo es configuracion declarativa que 
 - **Porter's Five Forces** - Competitividad de la industria
 - **Risk Matrix** - Impacto x Probabilidad
 
+### Frameworks de evaluacion profesional
+- **Professional SWOT** - Strengths, Weaknesses, Opportunities, Threats con evidencia
+- **Leadership Assessment Matrix** - 8 dimensiones con score /40 y tendencias
+- **Influence Network Analysis** - 5 factores con score /25 y tier (Emerging → Iconic)
+- **Reputation Risk Scoring** - 5 factores x probabilidad x impacto
+- **Career Trajectory Scenarios** - Ascent / Stability / Decline con indicadores tempranos
+
 ---
 
-## Estructura del reporte final
+## Estructura de los reportes finales
+
+### Reporte Corporate (.docx)
 
 ```
 Corporate Intelligence Assessment: [EMPRESA]
@@ -185,9 +230,39 @@ Corporate Intelligence Assessment: [EMPRESA]
 └── Annexes (Metodologia, Fuentes, SWOT, Porter)
 ```
 
+### Reporte Person (.docx)
+
+```
+Professional Assessment: [PERSONA]
+├── Executive Summary (BLUF)
+├── Professional Profile
+│   ├── Career Timeline
+│   └── Career Velocity Assessment
+├── Professional SWOT
+├── Leadership Assessment (8 dimensiones, score /40)
+│   ├── Strategic Vision
+│   ├── Execution Capability
+│   ├── Team Building
+│   ├── Innovation Drive
+│   ├── Communication
+│   ├── Crisis Management
+│   ├── Industry Credibility
+│   └── Board/Investor Confidence
+├── Influence Network Analysis (score /25)
+├── Reputation Risk Scoring
+├── Career Trajectory Scenarios
+│   ├── Ascent (con probabilidad e indicadores)
+│   ├── Stability
+│   └── Decline
+├── Key Judgments (con confidence levels)
+└── Recommendations (Immediate / Short-term / Monitor)
+```
+
 ---
 
 ## Fuentes OSINT consultadas
+
+### Corporate (6 tiers)
 
 | Tier | Tipo | Ejemplos |
 |------|------|----------|
@@ -196,6 +271,18 @@ Corporate Intelligence Assessment: [EMPRESA]
 | 3 | Mercado | Industry reports, Customer reviews (G2, Trustpilot), Glassdoor |
 | 4 | Alternativas | Patent filings, Job postings, Social media |
 | 5 | Conferencias | Expert interviews, Conference presentations, Podcasts |
+
+### Person (7 tiers)
+
+| Tier | Tipo | Ejemplos |
+|------|------|----------|
+| 1 | Identidad profesional | LinkedIn, bios oficiales, paginas "About" |
+| 2 | Apariciones publicas | Conferencias, podcasts, entrevistas, panels |
+| 3 | Produccion intelectual | Articulos, papers, patentes, libros |
+| 4 | Cobertura mediatica | News profiles, Forbes, Bloomberg, premios |
+| 5 | Gobernanza | Board seats, advisory roles, nonprofits, inversiones |
+| 6 | Presencia digital | Twitter/X, GitHub, Medium, Substack |
+| 7 | Registros publicos | SEC filings, proxy statements, litigios profesionales |
 
 ---
 
@@ -254,14 +341,30 @@ con validacion etica y los 5 agentes de Person Intelligence.
 ## Requisitos
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (CLI de Anthropic)
-- Suscripcion a Claude con acceso a agentes
+- Suscripcion a Claude (Pro, Team o Enterprise)
+
+---
+
+## Queres construir algo similar?
+
+Este proyecto es un ejemplo de como usar Claude Code como plataforma de agentes. Podes adaptarlo a cualquier dominio:
+
+- **Sales Intelligence** - Analisis de prospectos y cuentas
+- **Investment Research** - Due diligence de startups o empresas publicas
+- **Talent Assessment** - Evaluacion de candidatos para roles ejecutivos
+- **Market Research** - Analisis de mercados y tendencias
+- **Risk Assessment** - Evaluacion de riesgos operativos o regulatorios
+
+La estructura es siempre la misma: agentes en `.claude/agents/`, comandos en `.claude/commands/`, y hooks para automatizaciones. Claude Code hace el resto.
 
 ---
 
 ## Referencias
 
 - [CIA Intelligence Cycle](https://www.cia.gov/spy-kids/static/Briefing-intelligence-cycle.pdf)
-- [Claude Code - Subagents](https://docs.anthropic.com/en/docs/claude-code)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
+- [Claude Code - Custom Slash Commands](https://docs.anthropic.com/en/docs/claude-code/slash-commands)
+- [Claude Code - Sub Agents](https://docs.anthropic.com/en/docs/claude-code/sub-agents)
 - [SCIP - Strategic Consortium of Intelligence Professionals](https://www.scip.org/)
 
 ---
