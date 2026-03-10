@@ -12,6 +12,12 @@ const AGENT_CAPABILITIES = {
   'strategic-analyst': ['strategic-analysis', 'swot', 'porters', 'ach', 'scenario-planning'],
   'report-producer': ['report-generation', 'executive-report', 'docx', 'intelligence-report'],
   'qa-validator': ['quality-assurance', 'source-verification', 'bias-detection', 'validation'],
+  // Person Intelligence agents
+  'consent-validator': ['consent', 'ethics', 'permission', 'person-validation'],
+  'person-planner': ['person-planning', 'individual-research', 'person-kits'],
+  'person-osint': ['person-osint', 'person-collection', 'individual-data'],
+  'person-processor': ['person-processing', 'individual-data-processing'],
+  'person-analyst': ['person-analysis', 'leadership-assessment', 'person-swot'],
   // General development agents
   coder: ['code-generation', 'refactoring', 'debugging', 'implementation'],
   tester: ['unit-testing', 'integration-testing', 'coverage', 'test-generation'],
@@ -31,6 +37,13 @@ const TASK_PATTERNS = {
   'swot|porter|five forces|scenario|red team|ach|hypothesis': 'strategic-analyst',
   'generate report|produce report|docx|executive summary': 'report-producer',
   'validate report|qa|quality assurance|verify sources|bias': 'qa-validator',
+
+  // Person Intelligence patterns
+  'person analyze|person intelligence|individual assessment|leadership assessment': 'consent-validator',
+  'person osint|person collect|individual sources': 'person-osint',
+  'person process|individual data structure': 'person-processor',
+  'person swot|leadership analysis|person scenario|person analyst': 'person-analyst',
+  'person plan|individual research plan|person kits': 'person-planner',
 
   // Code patterns
   'implement|create|build|add|write code': 'coder',
