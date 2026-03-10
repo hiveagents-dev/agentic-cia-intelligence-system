@@ -180,4 +180,4 @@ Before completing collection:
 - [ ] Source registry is complete
 - [ ] Gaps are documented with mitigation attempts
 
-Save the output to: `/tmp/cia-analysis/{{company}}/02-collection.md`
+Save the output to: `./reports/working/{{company}}/02-collection.md`

@@ -78,7 +78,7 @@ Genera un documento .docx profesional con:
 Quality check: verifica fuentes, detecta sesgos, confirma que conclusiones fluyen de evidencia.
 
 ## ENTREGABLE:
-Un documento .docx profesional guardado en /mnt/user-data/outputs/ con el análisis completo.
+Un documento .docx profesional guardado en ./reports/ con el análisis completo.
 
 Muestra progreso con "📍 FASE [N]" al iniciar cada fase.
 Comienza ahora.
@@ -103,7 +103,7 @@ Analiza {{EMPRESA}} usando el CIA Intelligence Cycle:
 1. Busca info con web_search (financials, competitors, strategy, risks)
 2. Genera SWOT + Porter's Five Forces + 3 Escenarios (best/likely/worst)
 3. Crea reporte .docx con Executive Summary, Key Judgments, y Recomendaciones
-Guarda en /mnt/user-data/outputs/
+Guarda en ./reports/
 ```
 
 ### Versión Comparativa (vs Competidor)
@@ -113,7 +113,7 @@ Compara {{EMPRESA_A}} vs {{EMPRESA_B}} usando CIA Intelligence Cycle:
 2. Genera SWOT comparativo + ventajas competitivas de cada una
 3. Analiza quién gana en cada dimensión: producto, mercado, finanzas, talento
 4. Crea matriz de comparación y recomendaciones
-Guarda reporte .docx en /mnt/user-data/outputs/
+Guarda reporte .docx en ./reports/
 ```
 
 ### Versión Due Diligence (Pre-inversión)
@@ -123,7 +123,7 @@ Ejecuta due diligence de {{EMPRESA}} para decisión de inversión:
 2. Analiza: revenue quality, moat defensibility, scalability, red flags
 3. Genera: Investment Thesis + Key Risks + Valuation Considerations
 4. Incluye: Go/No-Go recommendation con nivel de confianza
-Guarda reporte .docx en /mnt/user-data/outputs/
+Guarda reporte .docx en ./reports/
 ```
 
 ---

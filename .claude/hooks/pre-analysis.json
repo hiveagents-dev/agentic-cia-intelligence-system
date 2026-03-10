@@ -8,7 +8,7 @@
   "hooks": [
     {
       "type": "command",
-      "command": "mkdir -p /tmp/cia-analysis 2>/dev/null || true"
+      "command": "mkdir -p ./reports/working 2>/dev/null || true"
     }
   ],
   "enabled": true,

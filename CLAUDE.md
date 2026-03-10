@@ -1,133 +1,188 @@
-# CIA Intelligence Cycle - Corporate Analysis System
+# Claude Code Configuration - RuFlo V3
 
-## Project Overview
+## Behavioral Rules (Always Enforced)
 
-Sistema multi-agente para análisis de inteligencia competitiva siguiendo la metodología del CIA Intelligence Cycle. Diseñado para generar reportes ejecutivos completos sobre cualquier empresa usando OSINT (Open Source Intelligence).
+- Do what has been asked; nothing more, nothing less
+- NEVER create files unless they're absolutely necessary for achieving your goal
+- ALWAYS prefer editing an existing file to creating a new one
+- NEVER proactively create documentation files (*.md) or README files unless explicitly requested
+- NEVER save working files, text/mds, or tests to the root folder
+- Never continuously check status after spawning a swarm — wait for results
+- ALWAYS read a file before editing it
+- NEVER commit secrets, credentials, or .env files
 
-## Architecture
+## File Organization
 
-Este proyecto implementa un pipeline de 6 agentes especializados que operan en secuencia:
+- NEVER save to root folder — use the directories below
+- Use `/src` for source code files
+- Use `/tests` for test files
+- Use `/docs` for documentation and markdown files
+- Use `/config` for configuration files
+- Use `/scripts` for utility scripts
+- Use `/examples` for example code
 
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  PLANNING   │───▶│ COLLECTION  │───▶│ PROCESSING  │
-│   Agent     │    │   Agent     │    │   Agent     │
-└─────────────┘    └─────────────┘    └─────────────┘
-                                             │
-┌─────────────┐    ┌─────────────┐    ┌──────▼──────┐
-│  FEEDBACK   │◀───│DISSEMINATION│◀───│  ANALYSIS   │
-│   Agent     │    │   Agent     │    │   Agent     │
-└─────────────┘    └─────────────┘    └─────────────┘
-```
+## Project Architecture
 
-## Directory Structure
+- Follow Domain-Driven Design with bounded contexts
+- Keep files under 500 lines
+- Use typed interfaces for all public APIs
+- Prefer TDD London School (mock-first) for new code
+- Use event sourcing for state changes
+- Ensure input validation at system boundaries
 
-```
-.claude/
-├── agents/                    # Subagentes especializados
-│   ├── planning-director.md   # Define KITs e hipótesis
-│   ├── osint-collector.md     # Recolección de información
-│   ├── data-processor.md      # Procesamiento y estructuración
-│   ├── strategic-analyst.md   # Análisis con técnicas CIA
-│   ├── report-producer.md     # Generación de reportes
-│   └── qa-validator.md        # Validación y quality check
-├── commands/                  # Slash commands
-│   ├── cia-analyze.md         # Comando principal de análisis
-│   ├── quick-intel.md         # Análisis rápido
-│   └── compare-companies.md   # Análisis comparativo
-├── hooks/                     # Automatizaciones
-│   ├── pre-search.json        # Validación antes de búsquedas
-│   └── post-report.json       # Acciones post-reporte
-└── skills/                    # Skills automáticos
-    └── competitive-intel/     # Skill de inteligencia competitiva
-```
+### Project Config
 
-## Usage
+- **Topology**: hierarchical-mesh
+- **Max Agents**: 15
+- **Memory**: hybrid
+- **HNSW**: Enabled
+- **Neural**: Enabled
 
-### Quick Start
+## Build & Test
+
 ```bash
-# Análisis completo
-/cia-analyze "Stripe"
+# Build
+npm run build
 
-# Análisis rápido (solo SWOT + escenarios)
-/quick-intel "OpenAI"
+# Test
+npm test
 
-# Comparación de empresas
-/compare-companies "Stripe" "Square"
+# Lint
+npm run lint
 ```
 
-### Direct Subagent Invocation
+- ALWAYS run tests after making code changes
+- ALWAYS verify build succeeds before committing
+
+## Security Rules
+
+- NEVER hardcode API keys, secrets, or credentials in source files
+- NEVER commit .env files or any file containing secrets
+- Always validate user input at system boundaries
+- Always sanitize file paths to prevent directory traversal
+- Run `npx @claude-flow/cli@latest security scan` after security-related changes
+
+## Concurrency: 1 MESSAGE = ALL RELATED OPERATIONS
+
+- All operations MUST be concurrent/parallel in a single message
+- Use Claude Code's Task tool for spawning agents, not just MCP
+- ALWAYS batch ALL todos in ONE TodoWrite call (5-10+ minimum)
+- ALWAYS spawn ALL agents in ONE message with full instructions via Task tool
+- ALWAYS batch ALL file reads/writes/edits in ONE message
+- ALWAYS batch ALL Bash commands in ONE message
+
+## Swarm Orchestration
+
+- MUST initialize the swarm using CLI tools when starting complex tasks
+- MUST spawn concurrent agents using Claude Code's Task tool
+- Never use CLI tools alone for execution — Task tool agents do the actual work
+- MUST call CLI tools AND Task tool in ONE message for complex work
+
+### 3-Tier Model Routing (ADR-026)
+
+| Tier | Handler | Latency | Cost | Use Cases |
+|------|---------|---------|------|-----------|
+| **1** | Agent Booster (WASM) | <1ms | $0 | Simple transforms (var→const, add types) — Skip LLM |
+| **2** | Haiku | ~500ms | $0.0002 | Simple tasks, low complexity (<30%) |
+| **3** | Sonnet/Opus | 2-5s | $0.003-0.015 | Complex reasoning, architecture, security (>30%) |
+
+- Always check for `[AGENT_BOOSTER_AVAILABLE]` or `[TASK_MODEL_RECOMMENDATION]` before spawning agents
+- Use Edit tool directly when `[AGENT_BOOSTER_AVAILABLE]`
+
+## Swarm Configuration & Anti-Drift
+
+- ALWAYS use hierarchical topology for coding swarms
+- Keep maxAgents at 6-8 for tight coordination
+- Use specialized strategy for clear role boundaries
+- Use `raft` consensus for hive-mind (leader maintains authoritative state)
+- Run frequent checkpoints via `post-task` hooks
+- Keep shared memory namespace for all agents
+
+```bash
+npx @claude-flow/cli@latest swarm init --topology hierarchical --max-agents 8 --strategy specialized
 ```
-Use the planning-director subagent to analyze Tesla
-Use the strategic-analyst subagent on the collected data
+
+## Swarm Execution Rules
+
+- ALWAYS use `run_in_background: true` for all agent Task calls
+- ALWAYS put ALL agent Task calls in ONE message for parallel execution
+- After spawning, STOP — do NOT add more tool calls or check status
+- Never poll TaskOutput or check swarm status — trust agents to return
+- When agent results arrive, review ALL results before proceeding
+
+## V3 CLI Commands
+
+### Core Commands
+
+| Command | Subcommands | Description |
+|---------|-------------|-------------|
+| `init` | 4 | Project initialization |
+| `agent` | 8 | Agent lifecycle management |
+| `swarm` | 6 | Multi-agent swarm coordination |
+| `memory` | 11 | AgentDB memory with HNSW search |
+| `task` | 6 | Task creation and lifecycle |
+| `session` | 7 | Session state management |
+| `hooks` | 17 | Self-learning hooks + 12 workers |
+| `hive-mind` | 6 | Byzantine fault-tolerant consensus |
+
+### Quick CLI Examples
+
+```bash
+npx @claude-flow/cli@latest init --wizard
+npx @claude-flow/cli@latest agent spawn -t coder --name my-coder
+npx @claude-flow/cli@latest swarm init --v3-mode
+npx @claude-flow/cli@latest memory search --query "authentication patterns"
+npx @claude-flow/cli@latest doctor --fix
 ```
 
-## Conventions
+## Available Agents (60+ Types)
 
-### Data Flow
-- Cada agente produce un output estructurado en JSON/Markdown
-- El output de cada fase alimenta la siguiente
-- Los datos se almacenan en `/tmp/cia-analysis/{company}/`
+### Core Development
+`coder`, `reviewer`, `tester`, `planner`, `researcher`
 
-### File Naming
-- Datos crudos: `{phase}-raw-{timestamp}.json`
-- Datos procesados: `{phase}-processed-{timestamp}.json`
-- Reporte final: `{company}_Intelligence_Assessment_{date}.docx`
+### Specialized
+`security-architect`, `security-auditor`, `memory-specialist`, `performance-engineer`
 
-### Confidence Levels
-- **HIGH**: Múltiples fuentes confiables, verificación cruzada exitosa
-- **MEDIUM**: Una fuente confiable o múltiples fuentes de menor confianza
-- **LOW**: Fuente única no verificada o información inferida
+### Swarm Coordination
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`
 
-### Source Reliability Scale
-- **A**: Completamente confiable (SEC filings, empresa directamente)
-- **B**: Usualmente confiable (medios reputados, analysts oficiales)
-- **C**: Fairly confiable (industria, agregadores conocidos)
-- **D**: No usualmente confiable (rumores, fuentes anónimas)
-- **E**: No confiable (sin verificar)
-- **F**: No se puede juzgar confiabilidad
+### GitHub & Repository
+`pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`
 
-## Analytical Frameworks
+### SPARC Methodology
+`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`
 
-Este sistema implementa las siguientes técnicas del CIA Tradecraft:
+## Memory Commands Reference
 
-1. **Analysis of Competing Hypotheses (ACH)** - Evaluación de hipótesis contra evidencia
-2. **Linchpin Analysis** - Identificación de supuestos críticos
-3. **Red Team Analysis** - Perspectiva adversaria
-4. **Scenario Planning** - Best/Most Likely/Worst case
-5. **SWOT Analysis** - Fortalezas, Debilidades, Oportunidades, Amenazas
-6. **Porter's Five Forces** - Análisis de competitividad industrial
+```bash
+# Store (REQUIRED: --key, --value; OPTIONAL: --namespace, --ttl, --tags)
+npx @claude-flow/cli@latest memory store --key "pattern-auth" --value "JWT with refresh" --namespace patterns
 
-## Output Format
+# Search (REQUIRED: --query; OPTIONAL: --namespace, --limit, --threshold)
+npx @claude-flow/cli@latest memory search --query "authentication patterns"
 
-El reporte final incluye:
-1. Executive Summary con BLUF (Bottom Line Up Front)
-2. Key Judgments con niveles de confianza
-3. Company Overview
-4. Financial Intelligence
-5. Competitive Positioning
-6. Strategic Direction
-7. Risk Assessment
-8. Scenario Analysis
-9. Early Warning Indicators
-10. Anexos (metodología, fuentes, matrices)
+# List (OPTIONAL: --namespace, --limit)
+npx @claude-flow/cli@latest memory list --namespace patterns --limit 10
 
-## Best Practices
+# Retrieve (REQUIRED: --key; OPTIONAL: --namespace)
+npx @claude-flow/cli@latest memory retrieve --key "pattern-auth" --namespace patterns
+```
 
-- Siempre verificar datos críticos con múltiples fuentes
-- Indicar nivel de confianza en cada afirmación clave
-- Identificar gaps de información explícitamente
-- Separar hechos de inferencias
-- Usar fechas específicas para datos temporales
-- Citar fuentes para claims verificables
+## Quick Setup
 
-## Ethical Guidelines
+```bash
+claude mcp add claude-flow -- npx -y @claude-flow/cli@latest
+npx @claude-flow/cli@latest daemon start
+npx @claude-flow/cli@latest doctor --fix
+```
 
-- Solo usar OSINT (información pública disponible)
-- No acceder a información privilegiada
-- Cumplir con regulaciones de privacidad
-- No hacer trading basado en información no pública
-- Declarar limitaciones del análisis
+## Claude Code vs CLI Tools
 
----
-*HiveAgents.dev - AI Agent Engineering*
+- Claude Code's Task tool handles ALL execution: agents, file ops, code generation, git
+- CLI tools handle coordination via Bash: swarm init, memory, hooks, routing
+- NEVER use CLI tools as a substitute for Task tool agents
+
+## Support
+
+- Documentation: https://github.com/ruvnet/claude-flow
+- Issues: https://github.com/ruvnet/claude-flow/issues

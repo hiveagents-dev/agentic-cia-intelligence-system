@@ -501,4 +501,4 @@ A linchpin is a critical assumption that, if wrong, would fundamentally change t
 | [Gap 2] | [Impact] | [How to fill] |
 ```
 
-Save the output to: `/tmp/cia-analysis/{{company}}/04-analysis.md`
+Save the output to: `./reports/working/{{company}}/04-analysis.md`

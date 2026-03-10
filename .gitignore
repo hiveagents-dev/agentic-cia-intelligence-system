@@ -1,0 +1,15 @@
+# Runtime data
+.claude-flow/
+firebase-debug.log
+reports/working/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+
+# Environment
+.env
+.env.*

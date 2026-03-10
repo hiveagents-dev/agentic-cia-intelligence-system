@@ -10,6 +10,14 @@ Execute a complete corporate intelligence analysis using the CIA Intelligence Cy
 ## Arguments
 - `$COMPANY` - The name of the company to analyze (required)
 
+## Input Validation
+Before starting, validate that `$COMPANY`:
+- Is not empty
+- Does not contain shell metacharacters (`;&|$(){}[]<>!\`) or path traversal (`../`)
+- Is trimmed and under 200 characters
+
+If invalid, inform the user and do not proceed.
+
 ## Execution Flow
 
 You will orchestrate 6 specialized subagents in sequence:
@@ -71,7 +79,7 @@ The agent will:
 - Include Executive Summary with BLUF
 - Document all findings with sources
 - Provide actionable recommendations
-- Save to /mnt/user-data/outputs/
+- Save to ./reports/
 ```
 
 ### Phase 6: Quality Assurance
@@ -99,7 +107,7 @@ After each phase, report:
 ## Final Deliverable
 
 The final output will be saved to:
-`/mnt/user-data/outputs/$COMPANY_Intelligence_Assessment_[DATE].docx`
+`./reports/$COMPANY_Intelligence_Assessment_[DATE].docx`
 
 ## Example Usage
 

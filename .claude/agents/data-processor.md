@@ -278,4 +278,4 @@ For each critical data point:
 | [Gap 1] | [Cat] | [H/M/L] | [Notes] |
 ```
 
-Save the output to: `/tmp/cia-analysis/{{company}}/03-processed.md`
+Save the output to: `./reports/working/{{company}}/03-processed.md`

@@ -317,4 +317,4 @@ Before approving:
 - [ ] Document is professionally formatted
 - [ ] Spelling and grammar are correct
 
-Save the QA report to: `/tmp/cia-analysis/{{company}}/06-qa-report.md`
+Save the QA report to: `./reports/working/{{company}}/06-qa-report.md`

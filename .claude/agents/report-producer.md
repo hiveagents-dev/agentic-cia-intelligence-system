@@ -417,4 +417,4 @@ Before finalizing:
 - [ ] Spelling and grammar checked
 - [ ] No placeholder text remaining
 
-Save the output to: `/mnt/user-data/outputs/{{company}}_Intelligence_Assessment_{{date}}.docx`
+Save the output to: `./reports/{{company}}_Intelligence_Assessment_{{date}}.docx`

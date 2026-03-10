@@ -1,355 +1,208 @@
-# 🕵️ CIA Intelligence Cycle - Corporate Analysis System
+# CIA Intelligence Cycle - Corporate Analysis System
 
-## Sistema Multi-Agente para Análisis de Inteligencia Competitiva
+Sistema multi-agente para ejecutar analisis de inteligencia competitiva siguiendo la metodologia del CIA Intelligence Cycle, construido como una configuracion nativa de **Claude Code** usando subagents, hooks, skills y slash commands.
 
-Un framework completo para ejecutar análisis de inteligencia competitiva siguiendo la metodología del CIA Intelligence Cycle, optimizado para **Claude Code** con subagents, hooks, skills, y slash commands.
+> Este proyecto demuestra como usar Claude Code mas alla del desarrollo de software: como plataforma de agentes de proposito general para inteligencia competitiva corporativa.
 
 ---
 
-## 📁 Estructura del Proyecto
+## Quick Start
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/tu-usuario/cia-intelligence-system.git
+
+# 2. Abrir Claude Code en el directorio
+cd cia-intelligence-system
+claude
+
+# 3. Ejecutar un analisis
+/cia-analyze Stripe
+```
+
+Eso es todo. Claude Code detecta automaticamente la configuracion en `.claude/` y habilita los 6 agentes, comandos y hooks.
+
+### Comandos disponibles
+
+| Comando | Ejemplo | Tiempo |
+|---------|---------|--------|
+| `/cia-analyze` | `/cia-analyze Stripe` | ~60 min |
+| `/quick-intel` | `/quick-intel OpenAI` | ~15 min |
+| `/compare-companies` | `/compare-companies Stripe Square` | ~45 min |
+
+---
+
+## Que es esto?
+
+Un framework que transforma Claude Code en un sistema de inteligencia competitiva con 6 agentes especializados que siguen el ciclo de inteligencia de la CIA:
+
+```
+Planning ──> Collection ──> Processing ──> Analysis ──> Report ──> Validation
+   │                                                                    │
+   └────────────────────── Feedback Loop ──────────────────────────────┘
+```
+
+Cada fase es ejecutada por un agente con un rol especifico, herramientas dedicadas, y un output estructurado que alimenta la siguiente fase.
+
+---
+
+## Arquitectura
+
+### Los 6 agentes
+
+| # | Agente | Que hace | Output |
+|---|--------|----------|--------|
+| 1 | **Planning Director** | Define Key Intelligence Topics (KITs), hipotesis, y plan de recoleccion | `01-planning.md` |
+| 2 | **OSINT Collector** | Busca informacion publica en 6 tiers de fuentes | `02-collection.md` |
+| 3 | **Data Processor** | Normaliza, categoriza y estructura los datos crudos | `03-processed.md` |
+| 4 | **Strategic Analyst** | Aplica ACH, SWOT, Porter, Red Team y Scenario Planning | `04-analysis.md` |
+| 5 | **Report Producer** | Genera un reporte ejecutivo profesional en DOCX | `Intelligence_Assessment.docx` |
+| 6 | **QA Validator** | Valida fuentes, detecta sesgos, verifica logica | `06-qa-report.md` |
+
+### Estructura del proyecto
 
 ```
 cia-intelligence-system/
-├── CLAUDE.md                      # 📋 Contexto principal del proyecto
 ├── .claude/
-│   ├── agents/                    # 🤖 6 Subagentes especializados
-│   │   ├── planning-director.md   #    Fase 1: Planning & Direction
-│   │   ├── osint-collector.md     #    Fase 2: Collection (OSINT)
-│   │   ├── data-processor.md      #    Fase 3: Processing
-│   │   ├── strategic-analyst.md   #    Fase 4: Analysis & Production
-│   │   ├── report-producer.md     #    Fase 5: Dissemination
-│   │   └── qa-validator.md        #    Fase 6: Feedback & Validation
-│   ├── commands/                  # ⚡ Slash commands
-│   │   ├── cia-analyze.md         #    /cia-analyze [company]
-│   │   ├── quick-intel.md         #    /quick-intel [company]
-│   │   └── compare-companies.md   #    /compare-companies [A] [B]
-│   ├── hooks/                     # 🪝 Automatizaciones
-│   │   ├── pre-analysis.json      #    Setup antes de análisis
-│   │   └── post-report.json       #    Acciones post-reporte
-│   ├── skills/                    # 🎯 Skills automáticos
-│   │   └── competitive-intel/
-│   │       └── SKILL.md
-│   └── settings.json              # ⚙️ Configuración
-├── MASTER_PROMPT.md               # 📖 Documentación completa
-├── QUICK_PROMPT.md                # 🚀 Prompts simplificados
-└── README.md                      # 📚 Esta documentación
+│   ├── agents/                    # 6 subagentes especializados
+│   │   ├── planning-director.md
+│   │   ├── osint-collector.md
+│   │   ├── data-processor.md
+│   │   ├── strategic-analyst.md
+│   │   ├── report-producer.md
+│   │   └── qa-validator.md
+│   ├── commands/                  # Slash commands
+│   │   ├── cia-analyze.md         # /cia-analyze [company]
+│   │   ├── quick-intel.md         # /quick-intel [company]
+│   │   └── compare-companies.md   # /compare-companies [A] [B]
+│   ├── hooks/                     # Automatizaciones
+│   │   ├── pre-analysis.json      # Crea directorios antes de analizar
+│   │   └── post-report.json       # Confirmacion post-reporte
+│   ├── skills/
+│   │   └── competitive-intel/     # Skill de activacion automatica
+│   │       ├── SKILL.md
+│   │       ├── templates/         # Templates de reportes
+│   │       └── prompts/           # Prompts analiticos (SWOT, Porter, Scenarios)
+│   └── settings.json              # Configuracion, hooks, permisos
+├── reports/                       # Output de analisis (generado automaticamente)
+├── CLAUDE.md                      # Contexto del proyecto para Claude Code
+├── MASTER_PROMPT.md               # Documentacion detallada de cada agente
+├── QUICK_PROMPT.md                # Prompts simplificados para uso rapido
+└── README.md
 ```
 
 ---
 
-## 🚀 Instalación
+## Como funciona Claude Code con este proyecto
 
-### Para Claude Code
-```bash
-# Clonar o copiar el directorio a tu proyecto
-cp -r cia-intelligence-system/ tu-proyecto/
+Claude Code lee automaticamente:
 
-# O agregar como submódulo
-git submodule add [repo-url] cia-intelligence
+- **`CLAUDE.md`** - Reglas de comportamiento y configuracion del proyecto
+- **`.claude/agents/*.md`** - Define subagentes con roles, herramientas y modelos especificos
+- **`.claude/commands/*.md`** - Registra slash commands como `/cia-analyze`
+- **`.claude/hooks/*.json`** - Ejecuta acciones automaticas (ej: crear directorios antes de un web search)
+- **`.claude/skills/`** - Activa comportamientos automaticos cuando detecta patrones (ej: "analiza Stripe")
+- **`.claude/settings.json`** - Permisos, modelo por defecto, hooks del sistema
 
-# El directorio .claude/ será detectado automáticamente por Claude Code
-```
-
-### Verificar instalación
-```bash
-# En Claude Code, verifica que los agentes estén disponibles
-/agents
-```
+No hay codigo ejecutable ni dependencias. Todo es configuracion declarativa que Claude Code interpreta.
 
 ---
 
-## 🎯 Uso
+## Tecnicas analiticas incluidas
 
-### Método 1: Slash Commands (Recomendado)
-```bash
-# Análisis completo (60+ minutos)
-/cia-analyze Stripe
-
-# Análisis rápido (15-20 minutos)
-/quick-intel OpenAI
-
-# Comparación de empresas
-/compare-companies Stripe Square
-```
-
-### Método 2: Invocación Directa de Subagentes
-```
-# Invocar un agente específico
-Use the planning-director subagent to analyze Tesla
-
-# Continuar con el siguiente agente
-Use the osint-collector subagent with the KITs from the planning phase
-
-# Ejecutar análisis con técnicas específicas
-Use the strategic-analyst subagent to generate SWOT and Porter's Five Forces
-```
-
-### Método 3: Prompt Completo
-```
-Ejecuta un análisis de inteligencia competitiva completo para [EMPRESA] 
-siguiendo el CIA Intelligence Cycle.
-
-Fases: Planning → Collection → Processing → Analysis → Dissemination → Validation
-
-Usa los 6 subagentes especializados en secuencia y genera un reporte .docx profesional.
-```
-
----
-
-## 🔄 El CIA Intelligence Cycle
-
-```
-    ┌─────────────────────────────────────────────────────┐
-    │                                                     │
-    │    ┌──────────┐     ┌──────────┐     ┌──────────┐  │
-    │    │ PLANNING │────▶│COLLECTION│────▶│PROCESSING│  │
-    │    │    &     │     │          │     │          │  │
-    │    │DIRECTION │     │  OSINT   │     │   DATA   │  │
-    │    └──────────┘     └──────────┘     └────┬─────┘  │
-    │          ▲                                │        │
-    │          │                                ▼        │
-    │    ┌──────────┐     ┌──────────┐     ┌──────────┐  │
-    │    │ FEEDBACK │◀────│DISSEMIN- │◀────│ ANALYSIS │  │
-    │    │    &     │     │  ATION   │     │    &     │  │
-    │    │VALIDATION│     │          │     │PRODUCTION│  │
-    │    └──────────┘     └──────────┘     └──────────┘  │
-    │                                                     │
-    └─────────────────────────────────────────────────────┘
-```
-
----
-
-## 🤖 Los 6 Subagentes Especializados
-
-| Agente | Archivo | Rol | Herramientas |
-|--------|---------|-----|--------------|
-| **Planning Director** | `planning-director.md` | Define KITs, hipótesis, collection plan | Read, Write, Edit |
-| **OSINT Collector** | `osint-collector.md` | Recolección de información pública | WebSearch, WebFetch, Bash |
-| **Data Processor** | `data-processor.md` | Normalización y estructuración | Read, Write, Edit, Bash |
-| **Strategic Analyst** | `strategic-analyst.md` | ACH, SWOT, Porter, Red Team, Scenarios | Read, Write, Edit |
-| **Report Producer** | `report-producer.md` | Genera reporte ejecutivo .docx | Read, Write, Edit, Bash |
-| **QA Validator** | `qa-validator.md` | Validación, bias detection, quality | Read, Write, Edit |
-
-### Flujo de Agentes
-
-```
-┌─────────────────┐
-│    PLANNING     │ → Define qué investigar
-│    DIRECTOR     │   (KITs, hipótesis)
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│     OSINT       │ → Busca información
-│   COLLECTOR     │   (web search, OSINT)
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│      DATA       │ → Estructura datos
-│   PROCESSOR     │   (normaliza, categoriza)
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│   STRATEGIC     │ → Analiza con frameworks
-│    ANALYST      │   (SWOT, ACH, scenarios)
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│     REPORT      │ → Genera documento
-│    PRODUCER     │   (DOCX profesional)
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│       QA        │ → Valida calidad
-│   VALIDATOR     │   (bias, gaps, logic)
-└─────────────────┘
-```
-
----
-
-## 📊 Técnicas Analíticas Incluidas
-
-### Del Framework CIA:
-- **Analysis of Competing Hypotheses (ACH)** - Evalúa hipótesis contra evidencia
-- **Linchpin Analysis** - Identifica supuestos críticos
+### Del framework CIA
+- **Analysis of Competing Hypotheses (ACH)** - Evalua hipotesis contra evidencia
+- **Linchpin Analysis** - Identifica supuestos criticos
 - **Red Team Analysis** - Perspectiva del adversario
-- **Scenario Planning** - Best/Most Likely/Worst case
+- **Scenario Planning** - Best / Most Likely / Worst case
+- **Early Warning Indicators** - Senales tempranas de cambio
 
-### Frameworks Corporativos:
+### Frameworks corporativos
 - **SWOT Analysis** - Fortalezas, Debilidades, Oportunidades, Amenazas
 - **Porter's Five Forces** - Competitividad de la industria
 - **Risk Matrix** - Impacto x Probabilidad
 
 ---
 
-## 📄 Estructura del Reporte Final
+## Estructura del reporte final
 
 ```
 Corporate Intelligence Assessment: [EMPRESA]
 ├── Executive Summary
 │   ├── BLUF (Bottom Line Up Front)
 │   ├── Key Judgments (con confidence levels)
-│   └── Recommended Actions
+│   └── Recommended Actions (con timeline)
 ├── Company Overview
 ├── Financial Intelligence
 ├── Competitive Positioning
 ├── Strategic Direction
 ├── Leadership & Organization
 ├── Risk Assessment
-├── Scenario Analysis
+├── Scenario Analysis (3 escenarios)
 ├── Early Warning System
-└── Anexos
-    ├── Metodología CIA
-    ├── Fuentes consultadas
-    └── Matrices completas
+└── Annexes (Metodologia, Fuentes, SWOT, Porter)
 ```
 
 ---
 
-## 🔍 Fuentes OSINT Consultadas
+## Fuentes OSINT consultadas
 
-### Tier 1 - Oficiales
-- Website corporativo
-- SEC Filings (10-K, 10-Q, 8-K)
-- Earnings calls transcripts
-- Press releases
-
-### Tier 2 - Financieras
-- Bloomberg, Reuters
-- Analyst reports
-- Credit ratings
-
-### Tier 3 - Mercado
-- Industry reports
-- Competitor analysis
-- Customer reviews (G2, Trustpilot)
-- Employee reviews (Glassdoor)
-
-### Tier 4 - Alternativas
-- Patent filings
-- Job postings
-- Social media
-- Conference presentations
+| Tier | Tipo | Ejemplos |
+|------|------|----------|
+| 1 | Oficiales | Website corporativo, SEC Filings, Earnings calls |
+| 2 | Financieras | Bloomberg, Reuters, Analyst reports |
+| 3 | Mercado | Industry reports, Customer reviews (G2, Trustpilot), Glassdoor |
+| 4 | Alternativas | Patent filings, Job postings, Social media |
+| 5 | Conferencias | Expert interviews, Conference presentations, Podcasts |
 
 ---
 
-## ⚙️ Configuración
+## Formas de uso
 
-### Requisitos:
-- Claude Code o acceso a Claude con computer use
-- Capacidad de web search
-- Capacidad de generar archivos .docx
+### Slash commands (recomendado)
+```
+/cia-analyze Stripe
+/quick-intel OpenAI
+/compare-companies Stripe Square
+```
 
-### Variables a personalizar:
-- `{{EMPRESA}}` - Nombre de la empresa objetivo
-- Profundidad de análisis (Quick/Standard/Deep)
-- Industria específica (opcional)
-- Competidores a comparar (opcional)
+### Invocacion directa de agentes
+```
+Use the planning-director subagent to analyze Tesla
+Use the strategic-analyst subagent to generate SWOT and Porter's Five Forces for Tesla
+```
 
----
-
-## 📈 Variantes de Uso
-
-### 1. Quick Analysis (15 min)
-Para decisiones rápidas. SWOT + 3 escenarios básicos.
-
-### 2. Standard Analysis (1 hora)
-Ciclo completo con todas las técnicas.
-
-### 3. Deep Dive (2+ horas)
-Análisis exhaustivo con múltiples iteraciones del ciclo.
-
-### 4. Comparative Analysis
-Dos empresas lado a lado.
-
-### 5. Due Diligence
-Enfocado en decisión de inversión/adquisición.
+### Prompt libre
+```
+Ejecuta un analisis de inteligencia competitiva completo para [EMPRESA]
+siguiendo el CIA Intelligence Cycle con los 6 agentes especializados.
+```
 
 ---
 
-## 🛡️ Consideraciones Éticas
+## Consideraciones eticas
 
-Este sistema utiliza únicamente **Open Source Intelligence (OSINT)**:
-- ✅ Información pública disponible
-- ✅ Fuentes verificables
-- ✅ Sin acceso a información privilegiada
-- ✅ Cumple con regulaciones de privacidad
+Este sistema utiliza unicamente **Open Source Intelligence (OSINT)**:
+- Solo informacion publica y verificable
+- Sin acceso a informacion privilegiada
+- Fuentes documentadas con ratings de confiabilidad (A-F)
+- Cumple con regulaciones de privacidad
 
 ---
 
-## 🔗 Referencias
+## Requisitos
+
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (CLI de Anthropic)
+- Suscripcion a Claude con acceso a agentes
+
+---
+
+## Referencias
 
 - [CIA Intelligence Cycle](https://www.cia.gov/spy-kids/static/Briefing-intelligence-cycle.pdf)
-- [SCIP - Strategic Consortium of Intelligence Professionals](https://www.scip.org/)
-- [Analysis of Competing Hypotheses](https://www.cia.gov/resources/csi/studies-in-intelligence/)
-
----
-
-## ⚡ Slash Commands
-
-| Comando | Uso | Descripción |
-|---------|-----|-------------|
-| `/cia-analyze` | `/cia-analyze Stripe` | Análisis completo (6 fases, 60+ min) |
-| `/quick-intel` | `/quick-intel OpenAI` | Análisis rápido (SWOT + Scenarios, 15 min) |
-| `/compare-companies` | `/compare-companies Stripe Square` | Comparación head-to-head |
-
----
-
-## 🪝 Hooks
-
-| Hook | Evento | Función |
-|------|--------|---------|
-| `pre-analysis` | PreToolUse (WebSearch) | Crea directorios de trabajo |
-| `post-report` | PostToolUse (Write .docx) | Confirmación de generación |
-
----
-
-## 🎯 Skills
-
-### competitive-intel
-Skill automático que se activa cuando Claude detecta:
-- Solicitudes de análisis de empresas
-- Queries de inteligencia competitiva
-- Requests de due diligence
-- Comparaciones de mercado
-
-El skill aplica automáticamente:
-- Búsqueda estructurada
-- Verificación de fuentes
-- Frameworks analíticos apropiados
-- Formato profesional de output
-
----
-
-## 📝 Changelog
-
-### v2.0.0 (2025-01-21)
-- ✨ Arquitectura completa de Claude Code
-- 🤖 6 subagentes especializados en `.claude/agents/`
-- ⚡ 3 slash commands en `.claude/commands/`
-- 🪝 Hooks de automatización en `.claude/hooks/`
-- 🎯 Skill de inteligencia competitiva
-- ⚙️ Configuración centralizada en `settings.json`
-- 📋 CLAUDE.md con contexto del proyecto
-
-### v1.0.0 (2025-01-21)
-- Sistema inicial con prompts
-- Documentación básica
-
----
-
-## 🔗 Referencias
-
-- [CIA Intelligence Cycle](https://www.cia.gov/spy-kids/static/Briefing-intelligence-cycle.pdf)
-- [Claude Code Subagents](https://docs.anthropic.com/claude-code/subagents)
+- [Claude Code - Subagents](https://docs.anthropic.com/en/docs/claude-code)
 - [SCIP - Strategic Consortium of Intelligence Professionals](https://www.scip.org/)
 
 ---
 
 *Desarrollado por [HiveAgents.dev](https://hiveagents.dev) - AI Agent Engineering*
-
-*"Transforming organizations with autonomous AI systems"*

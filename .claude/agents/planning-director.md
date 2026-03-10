@@ -102,4 +102,4 @@ Generate a structured planning document in the following format:
 - Hypotheses must be falsifiable
 - Timeline must be realistic (typically 1-2 hours for standard analysis)
 
-Save the output to: `/tmp/cia-analysis/{{company}}/01-planning.md`
+Save the output to: `./reports/working/{{company}}/01-planning.md`
