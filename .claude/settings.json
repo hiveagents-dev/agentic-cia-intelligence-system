@@ -1,0 +1,43 @@
+{
+  "project": {
+    "name": "CIA Intelligence Cycle System",
+    "version": "1.0.0",
+    "description": "Multi-agent system for competitive intelligence analysis"
+  },
+  "agents": {
+    "default_model": "claude-sonnet-4-20250514",
+    "opus_model": "claude-opus-4-20250514",
+    "parallel_execution": false,
+    "max_subagent_depth": 1
+  },
+  "analysis": {
+    "min_sources_per_kit": 3,
+    "source_reliability_threshold": "C",
+    "require_cross_verification": true,
+    "default_confidence": "MEDIUM"
+  },
+  "output": {
+    "format": "docx",
+    "output_dir": "/mnt/user-data/outputs",
+    "working_dir": "/tmp/cia-analysis",
+    "include_sources": true,
+    "include_methodology": true
+  },
+  "search": {
+    "max_searches_per_kit": 5,
+    "search_tiers": 6,
+    "fetch_full_articles": true
+  },
+  "quality": {
+    "min_quality_score": 70,
+    "require_qa_pass": true,
+    "bias_check": true,
+    "logic_check": true
+  },
+  "permissions": {
+    "allow_web_search": true,
+    "allow_web_fetch": true,
+    "allow_file_write": true,
+    "allow_bash": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "cia-pre-analysis",
+  "description": "Prepares the analysis environment before starting a CIA analysis",
+  "event": "PreToolUse",
+  "match": {
+    "tool": "WebSearch"
+  },
+  "hooks": [
+    {
+      "type": "command",
+      "command": "mkdir -p /tmp/cia-analysis 2>/dev/null || true"
+    }
+  ],
+  "enabled": true,
+  "notes": "Creates the working directory for CIA analysis outputs"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "cia-post-report",
+  "description": "Notifications and cleanup after report generation",
+  "event": "PostToolUse", 
+  "match": {
+    "tool": "Write",
+    "path_pattern": ".*Intelligence_Assessment.*\\.docx$"
+  },
+  "hooks": [
+    {
+      "type": "command",
+      "command": "echo '✅ CIA Intelligence Report generated successfully'"
+    }
+  ],
+  "enabled": true,
+  "notes": "Provides confirmation when an intelligence report is created"
+}
