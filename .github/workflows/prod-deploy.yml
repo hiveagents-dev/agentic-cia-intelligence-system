@@ -1,0 +1,92 @@
+# ─────────────────────────────────────────────────────────────────────────
+# prod-deploy.yml — pipeline de PRODUCCIÓN de fleet-ingest (Wave 7 R14; materializado
+# en epic #285, OLA 3, #308).
+#
+# GATE staging→prod INTACTO — la regla de oro:
+#   · La autonomía de la fábrica llega SOLO hasta staging.
+#   · El deploy a PROD lo dispara el CTO con un TAP en el panel del director.
+#   · Por eso este workflow es `workflow_dispatch`-ONLY: NUNCA corre solo (sin push:,
+#     sin pull_request:, sin schedule:). Si agregás un trigger automático, rompés el
+#     gate — lo hace fallar prod-trigger-lint.yml (OLA 0) y prod-trigger-gate.mjs (OLA 3).
+#
+# El gate server-side `deployProd` (tooling/director/command-executor.mjs) exige
+# ready===true + workflow==prodWorkflow + rol cto/admin: NO se toca aquí.
+#
+# Cómo lo detecta el director (reconcile.mjs): el nombre/archivo matchea
+# /prod|production|deploy-prod|release/i. `prod-deploy.yml` cumple — no lo renombres.
+#
+# Cómo lo dispara el ejecutor (command-executor.mjs, acción 'deploy-prod'):
+#   gh workflow run prod-deploy.yml --repo hiveagents-dev/<repo> --ref <ref||main>
+# El token `gh` de la Mac necesita scope `workflow` (ver docs/gate-staging-prod.md).
+# ─────────────────────────────────────────────────────────────────────────
+name: prod-deploy
+
+# GATE: SOLO manual. No agregar push/pull_request/schedule aquí.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Ref (rama/tag/sha) que se despliega. Informativo: gh workflow run --ref ya selecciona el ref del que se toma este archivo."
+        required: false
+        default: "main"
+
+# WIF/OIDC: id-token para acuñar el token de la SA de PROD (sin SA key en el repo);
+# contents para el checkout. Nada más.
+permissions:
+  contents: read
+  id-token: write
+
+# Un solo deploy a prod a la vez por repo: cancelá/encolá con concurrency.
+concurrency:
+  group: prod-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy a producción (fac-prod)
+    runs-on: ubuntu-latest
+    # Recomendado: environment protegido con reviewers/wait-timer en planes que lo
+    # soporten. En plan free NO hay required-reviewers: el gate REAL es el panel del
+    # director (workflow_dispatch-only + TAP del CTO con rol cto/admin).
+    # environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Contexto del deploy
+        run: |
+          echo "deploy a prod — repo=${{ github.repository }}"
+          echo "ref efectivo (checkout) = ${{ github.ref_name }} (${{ github.sha }})"
+          echo "disparado por = ${{ github.actor }}"
+
+      # OIDC → SA de deployer de PROD. SIN SA key: workload_identity_provider.
+      - name: Auth GCP (Workload Identity Federation)
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WIF_PROVIDER_PROD }}
+          service_account: ${{ vars.WIF_DEPLOYER_SA_PROD }}
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      # Deploy REAL: build + push (tag por SHA inmutable) + deploy DECLARATIVO
+      # (services replace) del KRM service.prod.yaml, imagen pineada por digest. _ENV=prod.
+      - name: Build & deploy (cloudbuild _ENV=prod, service.prod.yaml)
+        env:
+          PROJECT: ${{ vars.GCP_PROJECT_PROD }}
+        run: |
+          gcloud builds submit services/fleet-ingest \
+            --config=services/fleet-ingest/cloudbuild.yaml \
+            --substitutions="_ENV=prod,_PROJECT=${PROJECT},_REGION=europe-west1,_AR_REPO=fleet-ingest"
+
+      # Verificación post-deploy contra /healthz.
+      - name: Smoke test /healthz
+        env:
+          PROJECT: ${{ vars.GCP_PROJECT_PROD }}
+        run: |
+          url="$(gcloud run services describe fleet-ingest \
+            --project="${PROJECT}" --region=europe-west1 \
+            --format='value(status.url)')"
+          echo "prod url: ${url}"
+          curl -fsS --retry 5 --retry-all-errors "${url}/healthz"
